@@ -10,7 +10,7 @@ export default async function (
     await this.agent.like(uri, cid)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/like]", response)
+  console.log("[imaichat/like]", response)
   if (response instanceof Error) {
     return response
   }

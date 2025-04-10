@@ -23,7 +23,7 @@ export default async function (
     await this.agent.getPostThread(query)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/getPostThread]", response)
+  console.log("[imaichat/getPostThread]", response)
   if (response instanceof Error) {
     return response
   }

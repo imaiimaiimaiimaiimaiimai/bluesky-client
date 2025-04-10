@@ -21,7 +21,7 @@ export default async function (
     await this.agent.app.bsky.graph.searchStarterPacks(query)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/searchStarterPacks]", response)
+  console.log("[imaichat/searchStarterPacks]", response)
   if (response instanceof Error) {
     return response
   }

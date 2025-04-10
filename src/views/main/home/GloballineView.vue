@@ -46,7 +46,7 @@ async function connect () {
   let hostName = mainState.atp.session?.__service ?? ""
   const url = Util.safeUrl(hostName)
   if (url == null) {
-    console.warn("[klearsky/GloballineView]", hostName)
+    console.warn("[imaichat/GloballineView]", hostName)
     return
   }
   hostName = url.hostname

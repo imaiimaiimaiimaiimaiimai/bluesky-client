@@ -28,7 +28,7 @@ export default async function (
     await Util.fetchWithTimeout(url)
       .then((value) => value)
       .catch((error) => error)
-  const logHeader = `[klearsky/${host}/xrpc/${pathToXrpc}]`
+  const logHeader = `[imaichat/${host}/xrpc/${pathToXrpc}]`
   if (response instanceof Error) {
     console.log(logHeader, response)
     return response

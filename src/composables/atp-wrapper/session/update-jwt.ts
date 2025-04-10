@@ -33,7 +33,7 @@ export default async function (
     // 開発用
     const refreshDate = new Date()
     refreshDate.setTime(refreshJwt.exp * 1000)
-    console.warn(`[klearsky] refreshJwt was expired at ${refreshDate.toLocaleString()}.`)
+    console.warn(`[imaichat] refreshJwt was expired at ${refreshDate.toLocaleString()}.`)
 
     return Error("refreshJwtExpired")
   }
@@ -41,7 +41,7 @@ export default async function (
     // 開発用
     const accessDate = new Date()
     accessDate.setTime(accessJwt.exp * 1000)
-    console.warn(`[klearsky] accessJwt was expired at ${accessDate.toLocaleString()}.`)
+    console.warn(`[imaichat] accessJwt was expired at ${accessDate.toLocaleString()}.`)
 
     const response = await this.refreshSession()
     if (response instanceof Error) {

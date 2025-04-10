@@ -5,7 +5,7 @@ import vue from "@vitejs/plugin-vue"
 // Minify HTML
 import { createHtmlPlugin } from "vite-plugin-html"
 
-// `measureUserAgentSpecificMemory` を実行可能にするためにクロスオリジン分離状態を有効化する
+// Enable cross-origin isolation to make `measureUserAgentSpecificMemory` executable
 // SEE: https://web.dev/articles/monitor-total-page-memory-usage?hl=ja
 const env = loadEnv("development", process.cwd(), "")
 const server = (
@@ -58,7 +58,7 @@ export default defineConfig({
     },
   },
 
-  // ビルドプロダクションでは開発用のオブジェクトをドロップ
+  // Drop development objects in build production
   esbuild: {
     drop: process.env.NODE_ENV === "production"
       ? ["console", "debugger"]
@@ -68,10 +68,10 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        // NOTICE: 実体のある CSS を読み込まないこと
+        // NOTICE: Do not load CSS with actual content
         additionalData: "@use 'sass:map'; @use 'sass:math'; @import '@/scss/_variables.scss';",
 
-        // 下記の警告を抑制
+        // Suppress the following warnings
         // * `Deprecation Warning [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.`
         // * `Deprecation Warning [legacy-js-api]: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.`
         // * `Deprecation Warning [mixed-decls]: Sass's behavior for declarations that appear after nested rules will be changing to match the behavior specified by CSS in an upcoming version. To keep the existing behavior, move the declaration above the nested rule. To opt into the new behavior, wrap the declaration in \`& {}\`.`

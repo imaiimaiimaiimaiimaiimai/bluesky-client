@@ -5,6 +5,7 @@ import NotFoundView from "@/views/NotFoundView.vue"
 import MainView from "@/views/MainView.vue"
 import EditProfileView from "@/views/main/EditProfileView.vue"
 import PostView from "@/views/main/PostView.vue"
+import ImaiAIChatView from "@/views/main/ImaiAIChatView.vue"
 
 // Main - Home
 import HomeView from "@/views/main/HomeView.vue"
@@ -40,7 +41,7 @@ import UserSearchView from "@/views/main/search/UserSearchView.vue"
 const router = createRouter({
   history: createWebHashHistory(),
 
-  // スクロールポジションの復帰
+  // Restore scroll position
   scrollBehavior (_to, _from, savedPosition) {
     if (savedPosition != null) {
       return savedPosition
@@ -66,6 +67,18 @@ const router = createRouter({
           name: "post",
           meta: { label: "post" },
           component: PostView,
+        },
+        {
+          path: "/imai-ai",
+          name: "imai-ai",
+          meta: { label: "imaiAI" },
+          component: ImaiAIChatView,
+        },
+        {
+          path: "/feeds",
+          name: "feeds",
+          meta: { label: "feed" },
+          component: () => import("@/views/main/FeedsView.vue"),
         },
         {
           path: "/home",

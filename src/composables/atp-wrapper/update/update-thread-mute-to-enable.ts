@@ -12,7 +12,7 @@ export default async function (
     await this.agent.app.bsky.graph.muteThread(query)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/muteThread]", response)
+  console.log("[imaichat/muteThread]", response)
   if (response instanceof Error) {
     return response
   }

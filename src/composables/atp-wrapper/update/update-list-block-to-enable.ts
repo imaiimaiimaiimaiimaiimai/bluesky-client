@@ -9,7 +9,7 @@ export default async function (
     await this.agent.blockModList(listUri)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/blockModList]", response)
+  console.log("[imaichat/blockModList]", response)
   if (response instanceof Error) {
     return response
   }

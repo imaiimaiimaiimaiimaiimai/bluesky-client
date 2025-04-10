@@ -11,7 +11,7 @@ export default async function (
     await this.agent.mute(did)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/mute]", response)
+  console.log("[imaichat/mute]", response)
   if (response instanceof Error) {
     return response
   }

@@ -19,7 +19,7 @@ export default async function (
     await this.agent.app.bsky.unspecced.getTrendingTopics(query)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/getTrendingTopics]", response)
+  console.log("[imaichat/getTrendingTopics]", response)
   if (response instanceof Error) {
     return response
   }

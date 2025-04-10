@@ -29,7 +29,7 @@ export default async function (
     await this.agent.com.atproto.moderation.createReport(query)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/createReport]", response)
+  console.log("[imaichat/createReport]", response)
   if (response instanceof Error) {
     return response
   }

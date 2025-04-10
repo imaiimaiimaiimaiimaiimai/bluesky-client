@@ -11,7 +11,7 @@ export default async function (
     await this.agent.follow(declarationDid)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/follow]", response)
+  console.log("[imaichat/follow]", response)
   if (response instanceof Error) {
     return response
   }

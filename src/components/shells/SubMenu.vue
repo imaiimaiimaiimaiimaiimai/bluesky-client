@@ -42,37 +42,43 @@ function openKeywordHistoryPopover ($event: Event) {
     <!-- ロゴ -->
     <Logo />
 
-    <!-- ポスト検索フォーム -->
-    <div class="search-post-form">
-      <form @submit.prevent="searchPost">
-        <div class="group-parts">
-          <!-- キーワードボックス -->
-          <input
-            v-model="state.text"
-            type="search"
-            name="searchPost"
-            :placeholder="$t('postSearch')"
-            autocapitalize="off"
-            autocomplete="off"
-            inputmode="search"
-            spellcheck="false"
-            class="textbox"
-          >
+    <!-- Search card -->
+    <div class="card search-card">
+      <!-- ポスト検索フォーム -->
+      <div class="search-post-form">
+        <form @submit.prevent="searchPost">
+          <div class="group-parts">
+            <!-- キーワードボックス -->
+            <input
+              v-model="state.text"
+              type="search"
+              name="searchPost"
+              :placeholder="$t('postSearch')"
+              autocapitalize="off"
+              autocomplete="off"
+              inputmode="search"
+              spellcheck="false"
+              class="textbox"
+            >
 
-          <!-- キーワード履歴ポップオーバートリガー -->
-          <button
-            class="button--bordered"
-            type="button"
-            @click.prevent="openKeywordHistoryPopover"
-          >
-            <SVGIcon name="history" />
-          </button>
-        </div>
-      </form>
+            <!-- キーワード履歴ポップオーバートリガー -->
+            <button
+              class="button--bordered"
+              type="button"
+              @click.prevent="openKeywordHistoryPopover"
+            >
+              <SVGIcon name="history" />
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
-    <!-- マイフィードリスト -->
-    <MyFeedList />
+    <!-- Feeds card -->
+    <div class="card feeds-card">
+      <!-- マイフィードリスト -->
+      <MyFeedList />
+    </div>
 
     <!-- コピーライト -->
     <CopyRight />
@@ -85,6 +91,37 @@ function openKeywordHistoryPopover ($event: Event) {
   flex-direction: column;
   padding: 2rem 1rem 1rem;
   position: relative;
+}
+
+// Card styling for Twitter-like appearance
+.card {
+  background-color: var(--fg-color-0);
+  border: 1px solid var(--border-color-light, rgba(47, 51, 54, 0.2));
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+// Search card specific styles
+.search-card {
+  padding: 0.75rem;
+}
+
+// Feeds card specific styles
+.feeds-card {
+  padding: 0.75rem 0;
+  
+  :deep(.section-header) {
+    padding: 0 0.75rem;
+  }
+  
+  :deep(.feed-item) {
+    padding: 0.5rem 0.75rem;
+    
+    &:hover {
+      background-color: var(--bg-color-hover, rgba(255, 255, 255, 0.03));
+    }
+  }
 }
 
 // ロゴ

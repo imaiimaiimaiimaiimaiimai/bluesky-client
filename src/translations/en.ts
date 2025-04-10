@@ -1,5 +1,5 @@
 export default () => ({
-  "title": "Klearsky",
+  "title": "nexus",
 
   "atmosphere": "Atmosphere",
   "cancel": "Cancel",
@@ -37,11 +37,15 @@ export default () => ({
   "postWithReplies": "Posts and replies",
   "postWithMedia": "Posts with media",
   "postWithVideo": "Posts with video",
+  "post": "Post",
+  "everyone": "Everyone",
+  "everyoneCanReply": "Everyone can reply",
   "reload": "Reload",
   "refresh": "Refresh",
   "loading": "Loading...",
   "more": "See more",
-  "klearsky": "Klearsky",
+  "imaichat": "imaichat",
+  "imaiAI": "imaiAI",
   "bluesky": "Bluesky",
   "account": "Accounts",
   "profile": "Profile",
@@ -559,7 +563,7 @@ export default () => ({
   "accountImportNotification": "Imports account data. \n\n* Overwrites existing data with input data. No deletion. \n* Currently logged in data will not be overwritten.\n\nDo you want to continue?",
 
   "sendPost": "New Post",
-  "post": "Post",
+  "postContent": "Content",
   "reply": "Reply",
   "replies": "Replies",
   "replyUnknown": "Reply address unknown",
@@ -577,6 +581,8 @@ export default () => ({
   "sendPostNotification5": "It is possible to send more than the maximum number of characters.",
   "sendPostReset": "Reset all entries",
   "sendPostResetMessage": "Reset all entries. Are you sure?",
+  "typeYourMessage": "Type your message...",
+  "noDraftsFound": "No drafts found",
 
   "postDate": "Post date",
   "postDatePopupTitle": "Set post date",
@@ -692,9 +698,9 @@ export default () => ({
   "pnWhiteWind": "WhiteWind",
 
   "mergeV1ToV2": "Merge v1 feeds into v2 feeds",
-  "mergeV1ToV2Confirmation": "Add v1 format custom feeds to v2 format custom feeds.\n\n* This is for users who have been using Klearsky since v0.9.85 or earlier.\n* This operation will resume synchronization with the official client.\n* Please perform this operation only once.",
+  "mergeV1ToV2Confirmation": "Add v1 format custom feeds to v2 format custom feeds.\n\n* This is for users who have been using imaichat since v0.9.85 or earlier.\n* This operation will resume synchronization with the official client.\n* Please perform this operation only once.",
   "mergeV1ToV2Canceled": "An error occurred while merging feeds.\nA custom feeds in v1 format may not exist. In that case, merging is not necessary. Please ignore this error.",
-  "myFeedsFetchItemsError": "An error occurred while retrieving My Feeds.\nKlearsky may have failed to retrieve some feed generator or list. If there is a problem with the content of My Feeds, please reload your browser without closing My Feeds popup.",
+  "myFeedsFetchItemsError": "An error occurred while retrieving My Feeds.\nimaichat may have failed to retrieve some feed generator or list. If there is a problem with the content of My Feeds, please reload your browser without closing My Feeds popup.",
 
   "globalError": "An unknown error occured.",
   "unhandledRejectionError": "An unhandled rejection error occured.",
@@ -722,5 +728,16 @@ export default () => ({
   "refreshJwtExpired": "refreshJWT has expired. Please log in again.",
   "refreshSessionError": "An error occurred while refreshing the session. Please log in again.",
   "resumeSessionError": "An error occurred while restoring the session.\nThe session may be expired. Please log in again.",
-  "translationError": "An error occurred during translation."
+  "translationError": "An error occurred during translation.",
+
+  "voiceInputNotSupported": "Voice input is not supported in your browser",
+  "voiceInputError": "Error starting voice input. Please try again.",
+  "noTextToRefine": "Please enter some text before refining",
+  "refinePostError": "Error refining post. Please try again.",
+  "refining": "Refining...",
+  "recording": "Recording...",
+
+  "hour": "hour",
+  "hours": "hours",
+  "close": "Close",
 })

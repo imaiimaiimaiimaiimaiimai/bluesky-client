@@ -90,7 +90,7 @@ export default async function (
       }
     )
   } catch (error: any) {
-    console.log("[klearsky/upsertProfile]", error)
+    console.log("[imaichat/upsertProfile]", error)
     return error
   }
 }

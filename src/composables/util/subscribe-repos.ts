@@ -69,7 +69,7 @@ export default class {
   }
 
   onError (event: Event) {
-    console.warn("[klearsky/subscribeRepos]", event)
+    console.warn("[imaichat/subscribeRepos]", event)
     if (this.errorCallback != null) {
       this.errorCallback(event)
     }
@@ -97,13 +97,13 @@ export default class {
     const data = decodeMultiple(uint8Array) as Array<any>
     const header = data[0]
     if (header?.op !== 1) {
-      console.warn("[klearsky/subscribeRepos]", "header?.op !== 1", data)
+      console.warn("[imaichat/subscribeRepos]", "header?.op !== 1", data)
       return
     }
     const body = data[1]
     if (body?.blocks == null) {
       // 例： `{t: '#handle', op: 1}`: 新規ユーザー
-      console.warn("[klearsky/subscribeRepos]", "body?.blocks == null", data)
+      console.warn("[imaichat/subscribeRepos]", "body?.blocks == null", data)
       return
     }
     let car
@@ -112,7 +112,7 @@ export default class {
     try {
       car = CarBufferReader.fromBytes(body.blocks)
     } catch (error: any) {
-      console.warn("[klearsky/CarBufferReader.fromBytes]", error)
+      console.warn("[imaichat/CarBufferReader.fromBytes]", error)
     }
 
     if (this.messageCallback != null) {

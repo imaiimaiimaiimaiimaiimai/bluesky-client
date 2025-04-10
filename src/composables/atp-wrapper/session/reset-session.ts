@@ -31,18 +31,18 @@ export default function (
     delete currentSession.accessJwt
     delete currentSession.refreshJwt
     const error = Error("jwtUpdateError")
-    console.log("[klearsky/resetSession]", error)
+    console.log("[imaichat/resetSession]", error)
     return error
   } else if (LOGGEDIN_VERSION) {
     if (currentSession.__loggedinVersion < LOGGEDIN_VERSION) {
       delete currentSession.accessJwt
       delete currentSession.refreshJwt
       const error = Error("jwtUpdateError")
-      console.log("[klearsky/resetSession]", error)
+      console.log("[imaichat/resetSession]", error)
       return error
     }
   }
 
   this.data.sessions[this.data.did] = this.session = currentSession
-  console.log("[klearsky/resetSession]")
+  console.log("[imaichat/resetSession]")
 }

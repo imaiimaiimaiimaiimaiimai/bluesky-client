@@ -4,8 +4,9 @@
     "env.d.ts",
     "src/**/*",
     "src/**/*.vue",
-    "src/@types/**/*.ts",
-    "src/@types/**/*.d.ts"
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/shims-vue.d.ts"
   ],
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
@@ -16,6 +17,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
+    "resolveJsonModule": true,
 
     "baseUrl": ".",
     "paths": {

@@ -85,7 +85,7 @@ const dropFiles = ref(null)
 
 provide("state", state)
 
-// ワーカーの削除
+// Remove worker
 window.addEventListener("beforeunload", () => {
   state.myWorker!.close()
 })
@@ -175,7 +175,7 @@ router.afterEach(async (to: RouteLocationNormalized) => {
 function updatePageTitle () {
   const unreadCount = state.notificationCount + state.myChat!.unread
   let title = unreadCount === 0 ? "" : `(${unreadCount}) `
-  title += "Klearsky"
+  title += "imaichat"
 
   if (state.currentPath.startsWith("/search/"))
     title += ` - ${$t("search")}`

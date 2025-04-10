@@ -26,7 +26,7 @@ export default async function (
     await this.agent.chat.bsky.convo.updateRead(query, options)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/chat.bsky.convo.updateRead]", response)
+  console.log("[imaichat/chat.bsky.convo.updateRead]", response)
   if (response instanceof Error) {
     return response
   }

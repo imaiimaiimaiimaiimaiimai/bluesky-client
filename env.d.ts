@@ -6,3 +6,4 @@ declare module "@vue/runtime-core" {
     $t: Function;
   }
 }
+

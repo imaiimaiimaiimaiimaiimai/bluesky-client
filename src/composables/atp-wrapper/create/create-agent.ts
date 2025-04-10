@@ -10,9 +10,9 @@ export default function (
   this.agent = new AtpAgent({
     service: pdsUrl ?? service,
     persistSession: (event, session) => {
-      console.log("[klearsky/persistSession]", `event === ${event}`)
+      console.log("[imaichat/persistSession]", `event === ${event}`)
       if (session == null) {
-        console.warn("[klearsky/persistSession]", "session == null")
+        console.warn("[imaichat/persistSession]", "session == null")
         return
       }
 

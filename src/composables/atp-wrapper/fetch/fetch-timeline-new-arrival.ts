@@ -18,11 +18,11 @@ export default async function (
       .then((value) => value)
       .catch((error) => error)
   if (response instanceof Error) {
-    console.log("[klearsky/getTimeline]", response)
+    console.log("[imaichat/getTimeline]", response)
     return response
   }
   if (!response.success) {
-    console.log("[klearsky/getTimeline]", response)
+    console.log("[imaichat/getTimeline]", response)
     return Error("apiError")
   }
   return response.data.feed as Array<TTFeed>

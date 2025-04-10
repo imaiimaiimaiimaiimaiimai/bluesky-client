@@ -73,7 +73,7 @@ function exportAccounts () {
   Util.downloadBlob(
     [jsonString],
     { type: "application/json" },
-    `klearsky-account-list-${suffix}.json`
+    `imaichat-account-list-${suffix}.json`
   )
 }
 

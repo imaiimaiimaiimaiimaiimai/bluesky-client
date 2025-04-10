@@ -16,13 +16,13 @@ const state = reactive<{
   }),
 })
 
-// ポストの更新
+// Update post
 function updateThisPostThread (newPosts: Array<TTPost>) {
   if (mainState.currentPosts == null) {
     return
   }
 
-  // MEMO: ポストスレッドの全同一ポストに最新のデータを反映する
+  // NOTE: Update all identical posts in the post thread with the latest data
   mainState.currentPosts.forEach((post: TTPost, index: number) => {
     const newPost = newPosts.find((newPost: TTPost) => {
       return post?.uri === newPost.uri
@@ -33,14 +33,14 @@ function updateThisPostThread (newPosts: Array<TTPost>) {
   })
 }
 
-// ポストの削除
+// Remove post
 function removeThisPost (uri: string) {
   mainState.currentPosts = mainState.currentPosts.filter((post: TTPost) => {
     return post.uri !== uri
   })
 }
 
-// 再取得
+// Refresh
 async function updateAll () {
   Util.blurElement()
   mainState.centerLoaderDisplay = true
@@ -48,7 +48,7 @@ async function updateAll () {
   mainState.centerLoaderDisplay = false
 }
 
-// スレッドミュートのトグル
+// Toggle thread mute
 async function toggleThreadMute () {
   Util.blurElement()
   if (state.rootPost?.uri == null) {
@@ -78,12 +78,12 @@ async function toggleThreadMute () {
         :subTitle="state.rootPost?.author.displayName ?? ''"
       >
         <template #right>
-          <!-- 再取得ボタン -->
+          <!-- Refresh button -->
           <button @click.stop="updateAll">
             <SVGIcon name="refresh" />
           </button>
 
-          <!-- スレッドミュートトグル -->
+          <!-- Thread mute toggle -->
           <button
             class="post-view__thread-mute-toggle"
             :data-enable="state.rootPost?.viewer?.threadMuted"
@@ -115,24 +115,24 @@ async function toggleThreadMute () {
   padding-bottom: var(--sp-menu-height);
   position: relative;
 
-  // スレッドミュートトグル
+  // Thread mute toggle
   &__thread-mute-toggle[data-enable="true"] {
     --fg-color: var(--notice-color);
   }
 }
 
-// フォーカスポスト
+// Focus post
 .post[data-focus="true"]:not([data-position="preview"]) {
   background-color: rgb(var(--accent-color), 0.125);
   scroll-margin: 3.25rem;
 
   &:deep() {
-    // フォーカスポスト - フォントサイズの拡大
+    // Focus post - Enlarge font size
     .text:not([data-is-text-only-emoji="true"]) {
       font-size: 1.125em;
     }
 
-    // フォーカスポスト - テキスト選択の有効化
+    // Focus post - Enable text selection
     & > .body > .post__content > .html-text {
       user-select: text;
     }

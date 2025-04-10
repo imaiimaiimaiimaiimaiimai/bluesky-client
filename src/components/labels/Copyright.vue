@@ -11,19 +11,19 @@ const yyyy = (new Date).getFullYear()
 
 <template>
   <div class="copyright">
-    <small>Klearsky</small>
+    <small>imaichat</small>
     <RouterLink
       v-if="mainState.atp.hasLogin()"
       class="textlink--underline"
-      :to="{ path: '/search/post', query: { text: 'from:mimonelu.net ⭐ Klearsky | 🔥 Klearsky' } }"
+      :to="{ path: '/search/post', query: { text: 'from:imai-1984.bsky.social ⭐ imaichat | 🔥 imaichat' } }"
     >
       <span>v{{ Package.version }}</span>
     </RouterLink>
     <span v-else>v{{ Package.version }}</span>
-    <small>alpha (@atproto/api v{{ atprotoApiVersion }}) &copy; {{ yyyy }} mimonelu</small>
+    <small>alpha (@atproto/api v{{ atprotoApiVersion }}) &copy; {{ yyyy }} imai</small>
     <a
       class="textlink--underline"
-      href="https://github.com/mimonelu/klearsky"
+      href="https://github.com/imaiimaiimaiimaiimaiimai/bluesky-client"
       rel="noreferrer"
       target="_blank"
     >
@@ -31,7 +31,7 @@ const yyyy = (new Date).getFullYear()
     </a>
     <RouterLink
       class="textlink--underline"
-      :to="{ path: '/profile/feeds', query: { account: 'mimonelu.net' } }"
+      :to="{ path: '/profile/feeds', query: { account: 'imai-1984.bsky.social' } }"
     >
       <span>Bluesky</span>
     </RouterLink>

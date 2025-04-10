@@ -10,7 +10,7 @@ export default function (json: unknown) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="format-detection" content="telephone=no">
-    <title>Klearsky - Source Viewer</title>
+    <title>imaichat - Source Viewer</title>
     <style>
     * {
       margin: 0;

@@ -23,7 +23,7 @@ export default async function (
     })
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/getUploadLimits]", response)
+  console.log("[imaichat/getUploadLimits]", response)
   if (response instanceof Error) {
     return response
   }

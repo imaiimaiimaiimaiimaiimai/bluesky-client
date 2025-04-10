@@ -32,10 +32,10 @@ function close () {
 * {{ url }}</pre>
       <pre class="help">{{ $t("errorNotification") }} <a
         class="textlink"
-        href="https://bsky.app/profile/mimonelu.net"
+        href="https://bsky.app/profile/imai-1984.bsky.social"
         rel="noreferrer"
         target="_blank"
-      ><span>@mimonelu.net</span></a> </pre>
+      ><span>@imai-1984.bsky.social</span></a> </pre>
     </template>
   </Popup>
 </template>

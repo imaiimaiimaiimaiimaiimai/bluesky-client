@@ -63,7 +63,7 @@ export default async function (
     await this.agent.chat.bsky.convo.sendMessage(query, options)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/chat.bsky.convo.sendMessage]", response)
+  console.log("[imaichat/chat.bsky.convo.sendMessage]", response)
   if (response instanceof Error) {
     return response
   }

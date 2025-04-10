@@ -22,7 +22,7 @@ export default async function (
     await this.agent.chat.bsky.convo.muteConvo(query, options)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/chat.bsky.convo.muteConvo]", response)
+  console.log("[imaichat/chat.bsky.convo.muteConvo]", response)
   if (response instanceof Error) {
     return response
   }

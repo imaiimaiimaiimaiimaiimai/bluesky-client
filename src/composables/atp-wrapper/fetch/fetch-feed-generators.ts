@@ -12,7 +12,7 @@ export default async function (
     await this.agent.app.bsky.feed.getFeedGenerators(query)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/getFeedGenerators]", response)
+  console.log("[imaichat/getFeedGenerators]", response)
   if (response instanceof Error) {
     return response
   }

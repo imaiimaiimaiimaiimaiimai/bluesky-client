@@ -7,8 +7,8 @@ import { registerPlugins } from "@/plugins"
 
 const app = createApp(App)
 
-// プラグインの登録
+// Register plugins
 registerPlugins(app)
 
-// アプリケーションのマウント
+// Mount the application
 app.mount("#app")

@@ -12,7 +12,7 @@ export default async function (
     await this.agent.repost(uri, cid)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/repost]", response)
+  console.log("[imaichat/repost]", response)
   if (response instanceof Error) {
     return response
   }

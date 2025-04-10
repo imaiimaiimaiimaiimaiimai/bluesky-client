@@ -15,7 +15,7 @@ export default function (responses: Array<any>) {
     if (key === "embeds" && child[0] != null && parent.embed == null) {
       // parent.embed = Util.cloneJson(child[0])
       parent.embed = child[0]
-      parent.embed.__comment = "❗ This 'embed' was duplicated by Klearsky."
+      parent.embed.__comment = "❗ This 'embed' was duplicated by imaichat."
     }
   })
 
@@ -24,7 +24,7 @@ export default function (responses: Array<any>) {
     if (key === "value" && child.embed != null && parent.embed == null) {
       // parent.embed = Util.cloneJson(child.embed)
       parent.embed = child.embed
-      parent.embed.__comment = "❗ This 'embed' was duplicated by Klearsky."
+      parent.embed.__comment = "❗ This 'embed' was duplicated by imaichat."
     }
   })
 
@@ -33,11 +33,11 @@ export default function (responses: Array<any>) {
     if (key === "media") {
       if (child.external != null && parent.external == null) {
         parent.external = child.external // Util.cloneJson(child.external)
-        parent.external.__comment = "❗ This 'external' was duplicated by Klearsky."
+        parent.external.__comment = "❗ This 'external' was duplicated by imaichat."
       }
       if (child.images != null && parent.images == null) {
         parent.images = child.images // Util.cloneJson(child.images)
-        parent.images.__comment = "❗ This 'images' was duplicated by Klearsky."
+        parent.images.__comment = "❗ This 'images' was duplicated by imaichat."
       }
     }
   })
@@ -46,7 +46,7 @@ export default function (responses: Array<any>) {
   Util.traverseJson(responses, (key: string, child: any, parent: any) => {
     if (key === "record" && child.record != null) {
       parent.record = child.record // Util.cloneJson(child.record)
-      parent.record.__comment = "❗ This 'record' was duplicated by Klearsky."
+      parent.record.__comment = "❗ This 'record' was duplicated by imaichat."
     }
   })
 
@@ -57,7 +57,7 @@ export default function (responses: Array<any>) {
       if (child.embed.external != null && parent.embed?.external == null) {
         if (parent.embed == null) parent.embed = {}
         parent.embed.external = Util.cloneJson(child.embed.external)
-        parent.embed.external.__comment = "❗ This 'external' was duplicated by Klearsky."
+        parent.embed.external.__comment = "❗ This 'external' was duplicated by imaichat."
       }
       */
       if (child.embed.images != null) {
@@ -65,7 +65,7 @@ export default function (responses: Array<any>) {
         if (parent.embed?.images == null) {
           if (parent.embed == null) parent.embed = {}
           parent.embed.images = Util.cloneJson(child.embed.images)
-          parent.embed.images.__comment = "❗ This 'images' was duplicated by Klearsky."
+          parent.embed.images.__comment = "❗ This 'images' was duplicated by imaichat."
         }
         */
 
@@ -74,7 +74,7 @@ export default function (responses: Array<any>) {
           parent.embed.images.forEach((image: any, index: number) => {
             if (image.image == null && child.embed.images[index]?.image != null)
               image.image = child.embed.images[index].image
-              image.__comment = "❗ This 'image' was duplicated by Klearsky."
+              image.__comment = "❗ This 'image' was duplicated by imaichat."
           })
         }
       }

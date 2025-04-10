@@ -18,7 +18,7 @@ export default async function (this: TIAtpWrapper): Promise<Error | undefined> {
       .then((value) => value)
       .catch((error) => error)
 
-  console.log("[klearsky/deleteSession]", response)
+  console.log("[imaichat/deleteSession]", response)
   if (response instanceof Error) {
     return response
   }

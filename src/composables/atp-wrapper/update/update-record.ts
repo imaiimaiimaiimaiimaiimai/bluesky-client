@@ -31,7 +31,7 @@ export default async function (
     await this.agent.com.atproto.repo.putRecord(query)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/putRecord]", response)
+  console.log("[imaichat/putRecord]", response)
   if (response instanceof Error) {
     return response
   }

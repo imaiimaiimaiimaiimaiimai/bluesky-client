@@ -5,7 +5,7 @@
       to="/"
       class="button"
     >
-      <span>Back to Klearsky's top page</span>
+      <span>Back to imaichat's top page</span>
     </RouterLink>
   </div>
 </template>

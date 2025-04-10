@@ -67,7 +67,7 @@ function moveToBottom () {
 
 <template>
   <div class="main-menu-vertical">
-    <!-- プロフィールボタン -->
+    <!-- Profile Button -->
     <RouterLink
       class="profile-button"
       :to="{ name: 'profile-feeds', query: { account: mainState.atp.session?.did } }"
@@ -86,9 +86,9 @@ function moveToBottom () {
       <div class="label">{{ mainState.userProfile?.handle ?? "&nbsp;" }}</div>
     </RouterLink>
 
-    <!-- スクローラー -->
+    <!-- Scroller -->
     <div class="main-menu-vertical__scroller">
-      <!-- ホームボタン -->
+      <!-- Home Button -->
       <RouterLink
         class="link-button"
         to="/home"
@@ -96,7 +96,7 @@ function moveToBottom () {
         <div class="icon">
           <SVGIcon name="home" />
 
-          <!-- 新着フォロー中フィードバッジ -->
+          <!-- New Timeline Badge -->
           <div
             v-if="mainState.hasTimelineNewArrival && !mainState.currentSetting.hideNotificationBadge"
             class="timeline-new-arrival-badge"
@@ -105,7 +105,7 @@ function moveToBottom () {
         <div class="label">{{ $t("home") }}</div>
       </RouterLink>
 
-      <!-- 検索ボタン -->
+      <!-- Search Button -->
       <RouterLink
         class="link-button"
         :to="`/search/post${state.query}`"
@@ -117,7 +117,7 @@ function moveToBottom () {
         <div class="label">{{ $t("search") }}</div>
       </RouterLink>
 
-      <!-- 通知ボタン -->
+      <!-- Notification Button -->
       <button
         class="link-button"
         @click.prevent="openNotificationPopup"
@@ -125,7 +125,7 @@ function moveToBottom () {
         <div class="icon">
           <SVGIcon name="bell" />
 
-          <!-- 未読通知バッジ -->
+          <!-- Unread Notification Badge -->
           <div
             v-if="mainState.notificationCount > 0 && !mainState.currentSetting.hideNotificationBadge"
             class="unread-badge"
@@ -134,7 +134,7 @@ function moveToBottom () {
         <div class="label">{{ $t("notifications") }}</div>
       </button>
 
-      <!-- チャットボタン -->
+      <!-- Chat Button -->
       <button
         class="link-button"
         @click.prevent="openChatListPopup"
@@ -142,7 +142,7 @@ function moveToBottom () {
         <div class="icon">
           <SVGIcon name="chat" />
 
-          <!-- 未読チャットバッジ -->
+          <!-- Unread Chat Badge -->
           <div
             v-if="mainState.myChat!.unread > 0 && !mainState.currentSetting.hideNotificationBadge"
             class="unread-badge"
@@ -151,7 +151,31 @@ function moveToBottom () {
         <div class="label">{{ $t("chat") }}</div>
       </button>
 
-      <!-- 設定ボタン -->
+      <!-- Feed Button -->
+      <RouterLink
+        class="link-button"
+        :to="{ name: 'feeds' }"
+        :data-is-focus="mainState.currentPath.startsWith('/feeds')"
+      >
+        <div class="icon">
+          <SVGIcon name="feed" />
+        </div>
+        <div class="label">{{ $t("feed") }}</div>
+      </RouterLink>
+
+      <!-- imaiAI Button -->
+      <RouterLink
+        class="link-button"
+        :to="{ name: 'imai-ai' }"
+        :data-is-focus="mainState.currentPath.startsWith('/imai-ai')"
+      >
+        <div class="icon">
+          <SVGIcon name="imai-logo" />
+        </div>
+        <div class="label">{{ $t("imaiAI") }}</div>
+      </RouterLink>
+
+      <!-- Settings Button -->
       <button
         class="link-button main-menu-vertical__settings-popover-trigger"
         @click.prevent="openSettingsPopover"
@@ -162,7 +186,7 @@ function moveToBottom () {
         <div class="label">{{ $t("settings") }}</div>
       </button>
 
-      <!-- アカウントポップアップトリガー -->
+      <!-- Account Popup Trigger -->
       <button
         class="link-button"
         @click.prevent="openAccountPopup"
@@ -173,22 +197,15 @@ function moveToBottom () {
         <div class="label">{{ $t("myAccounts") }}</div>
       </button>
 
-      <!-- ポスト送信ポップアップトリガー -->
+      <!-- Post Send Popup Trigger -->
       <button
-        class="link-button send-post-button"
+        class="post-button"
         @click.prevent="openSendPostPopup"
       >
-        <div class="icon">
-          <SVGIcon
-            v-if="!mainState.sendPostPopupProcessing"
-            name="sendPost"
-          />
-          <Loader v-else />
-        </div>
-        <div class="label">{{ $t("sendPost") }}</div>
+        <span>{{ $t("Create Post") }}</span>
       </button>
 
-      <!-- スクロールダウンボタン -->
+      <!-- Scroll Down Button -->
       <button
         class="move-button move-to-bottom-button"
         @click.prevent="moveToBottom"
@@ -230,17 +247,17 @@ function moveToBottom () {
   flex-direction: column;
   grid-gap: 0.5rem;
 
-  // タブレットレイアウト
+  // Tablet layout
   @include media-tablet-layout() {
     @include slimLayout;
   }
 
-  // フルレイアウト
+  // Full layout
   @include media-full-layout() {
     overflow: hidden;
     padding: 1rem 1rem 1.25rem;
 
-    // 内部スクロール
+    // Internal scroll
     &__scroller {
       overflow-x: hidden;
       overflow-y: auto;
@@ -254,7 +271,7 @@ function moveToBottom () {
     }
   }
 
-  // スクローラー
+  // Scroller
   &__scroller {
     display: flex;
     flex-direction: column;
@@ -262,7 +279,7 @@ function moveToBottom () {
   }
 }
 
-// プロフィールボタン
+// Profile Button
 .profile-button {
   --size: 4.5rem;
   --padding: 1rem;
@@ -310,7 +327,7 @@ function moveToBottom () {
   }
 }
 
-// 各種ボタン
+// Various buttons
 .link-button {
   border-radius: var(--border-radius-middle);
   cursor: pointer;
@@ -378,26 +395,31 @@ function moveToBottom () {
       font-weight: bold;
     }
   }
+}
 
-  // ポスト送信ポップアップトリガー
-  &.send-post-button {
-    .svg-icon {
-      fill: rgb(var(--post-color), 0.5);
-    }
-
-    .loader {
-      font-size: 0.5rem;
-    }
-
-    &:focus, &:hover {
-      .svg-icon {
-        fill: rgb(var(--post-color));
-      }
-    }
+.post-button {
+  background-color: rgb(var(--accent-color));
+  border: none;
+  border-radius: 9999px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.75rem 0;
+  text-align: center;
+  width: 100%;
+  margin: 0.5rem 0;
+  transition: background-color 0.2s;
+  
+  &:hover {
+    background-color: rgba(var(--accent-color), 0.9);
+  }
+  
+  span {
+    font-size: 1rem;
   }
 }
 
-// 新着フォロー中フィードバッジ
+// New Timeline Badge
 .timeline-new-arrival-badge {
   background-color: rgb(var(--notice-color));
   border: 1px solid rgb(var(--bg-color));
@@ -409,7 +431,7 @@ function moveToBottom () {
   height: 0.625rem;
 }
 
-// 未読バッジ
+// Unread Badge
 .unread-badge {
   background-color: rgb(var(--notice-color));
   border: 1px solid rgb(var(--bg-color));
@@ -424,7 +446,7 @@ function moveToBottom () {
   top: -0.25rem;
 }
 
-// スクロールボタン
+// Scroll Button
 .move-button {
   cursor: pointer;
   display: flex;

@@ -57,85 +57,87 @@ async function autoScrollSliderMenu () {
         </template>
       </PageHeader>
 
-      <!-- スライダーメニュー -->
-      <div
-        class="slider-menu"
-        ref="sliderMenu"
-      >
-        <template
-          v-for="item of mainState.myFeeds!.pinnedItems"
-          :key="item.value.uri"
+      <!-- Navigation Categories Card -->
+      <div class="navigation-card">
+        <div
+          class="slider-menu"
+          ref="sliderMenu"
         >
-          <!-- フォロー中フィード -->
-          <RouterLink
-            v-if="item.kind === 'following'"
-            class="slider-menu__link"
-            to="/home/timeline"
-            :data-is-selected="true"
+          <template
+            v-for="item of mainState.myFeeds!.pinnedItems"
+            :key="item.value.uri"
           >
-            <SVGIcon name="shimmer" />
-            <span>{{ $t(item.value.displayName) }}</span>
-          </RouterLink>
-
-          <!-- `space.aoisora.preference.feed.extra` -->
-          <template v-else-if="item.kind === 'space.aoisora.preference.feed.extra'">
-            <!-- トレンド一覧ページ -->
+            <!-- フォロー中フィード -->
             <RouterLink
-              v-if="item.value.uri === 'trending'"
+              v-if="item.kind === 'following'"
               class="slider-menu__link"
-              to="/home/trending"
-              :data-is-selected="true"
-            >
-              <SVGIcon name="trending" />
-              <span>{{ $t(item.value.displayName) }}</span>
-            </RouterLink>
-
-            <!-- グローバルフィード -->
-            <RouterLink
-              v-else-if="item.value.uri === 'globalline'"
-              class="slider-menu__link"
-              to="/home/globalline"
+              to="/home/timeline"
               :data-is-selected="true"
             >
               <SVGIcon name="shimmer" />
               <span>{{ $t(item.value.displayName) }}</span>
             </RouterLink>
+
+            <!-- `space.aoisora.preference.feed.extra` -->
+            <template v-else-if="item.kind === 'space.aoisora.preference.feed.extra'">
+              <!-- トレンド一覧ページ -->
+              <RouterLink
+                v-if="item.value.uri === 'trending'"
+                class="slider-menu__link"
+                to="/home/trending"
+                :data-is-selected="true"
+              >
+                <SVGIcon name="trending" />
+                <span>{{ $t(item.value.displayName) }}</span>
+              </RouterLink>
+
+              <!-- グローバルフィード -->
+              <RouterLink
+                v-else-if="item.value.uri === 'globalline'"
+                class="slider-menu__link"
+                to="/home/globalline"
+                :data-is-selected="true"
+              >
+                <SVGIcon name="shimmer" />
+                <span>{{ $t(item.value.displayName) }}</span>
+              </RouterLink>
+            </template>
+
+            <!-- カスタムフィード -->
+            <RouterLink
+              v-else-if="item.kind === 'feed' && !!item.value.cid"
+              class="slider-menu__link"
+              :to="{
+                path: '/home/feeds',
+                query: {
+                  feed: item.value.uri,
+                  displayName: item.value.displayName,
+                },
+              }"
+              :data-is-selected="mainState.currentQuery.feed === item.value.uri"
+            >
+              <LazyImage :src="item.value.avatar" />
+              <span>{{ item.value.displayName }}</span>
+            </RouterLink>
+
+            <!-- リストフィード -->
+            <RouterLink
+              v-else-if="item.kind === 'list' && !!item.value.cid"
+              class="slider-menu__link"
+              :to="{
+                path: '/home/list-feeds',
+                query: {
+                  list: item.value.uri,
+                  displayName: item.value.name,
+                },
+              }"
+              :data-is-selected="mainState.currentQuery.list === item.value.uri"
+            >
+              <LazyImage :src="item.value.avatar" />
+              <span>{{ item.value.name }}</span>
+            </RouterLink>
           </template>
-
-          <!-- カスタムフィード -->
-          <RouterLink
-            v-else-if="item.kind === 'feed' && !!item.value.cid"
-            class="slider-menu__link"
-            :to="{
-              path: '/home/feeds',
-              query: {
-                feed: item.value.uri,
-                displayName: item.value.displayName,
-              },
-            }"
-            :data-is-selected="mainState.currentQuery.feed === item.value.uri"
-          >
-            <LazyImage :src="item.value.avatar" />
-            <span>{{ item.value.displayName }}</span>
-          </RouterLink>
-
-          <!-- リストフィード -->
-          <RouterLink
-            v-else-if="item.kind === 'list' && !!item.value.cid"
-            class="slider-menu__link"
-            :to="{
-              path: '/home/list-feeds',
-              query: {
-                list: item.value.uri,
-                displayName: item.value.name,
-              },
-            }"
-            :data-is-selected="mainState.currentQuery.list === item.value.uri"
-          >
-            <LazyImage :src="item.value.avatar" />
-            <span>{{ item.value.name }}</span>
-          </RouterLink>
-        </template>
+        </div>
       </div>
 
       <PortalTarget name="home-view-header-bottom" />
@@ -149,6 +151,71 @@ async function autoScrollSliderMenu () {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+}
+
+// Card styling for the navigation categories
+.navigation-card {
+  background-color: var(--fg-color-0);
+  border: 1px solid var(--border-color-light, rgba(47, 51, 54, 0.2));
+  border-radius: 12px;
+  margin: 0.5rem 0.75rem 0.75rem;
+  padding: 0.5rem 0;
+  overflow: hidden;
+}
+
+.slider-menu {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scroll-behavior: smooth;
+  padding: 0 0.5rem;
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    margin: 0 0.25rem;
+    white-space: nowrap;
+    border-radius: 9999px;
+    transition: background-color 0.2s;
+    font-weight: 500;
+    color: var(--text-color-muted);
+    text-decoration: none;
+
+    &[data-is-selected="true"] {
+      font-weight: 700;
+      color: var(--text-color);
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: -0.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 4px;
+        background-color: var(--accent-color, #1d9bf0);
+        border-radius: 50%;
+      }
+    }
+
+    &:hover {
+      background-color: var(--bg-color-hover, rgba(255, 255, 255, 0.03));
+    }
+
+    svg, img {
+      width: 1.25rem;
+      height: 1.25rem;
+      margin-right: 0.5rem;
+      flex-shrink: 0;
+    }
+  }
 }
 
 .page-header {

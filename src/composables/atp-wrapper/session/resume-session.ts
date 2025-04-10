@@ -25,7 +25,7 @@ export default async function (
     })
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/resumeSession]", response)
+  console.log("[imaichat/resumeSession]", response)
   if (response instanceof Error) {
     return Error("resumeSessionError")
   }

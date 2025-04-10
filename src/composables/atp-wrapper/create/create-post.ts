@@ -88,7 +88,7 @@ export default async function (
   }
 
   // カスタムフィールド - via
-  record[THIRD_PARTY_DOMAIN_VIA] = `Klearsky v${Package.version}`
+  record[THIRD_PARTY_DOMAIN_VIA] = `imaichat v${Package.version}`
 
   // Embed
   const embedResult = await Util.createEmbed(this, record, params)
@@ -126,7 +126,7 @@ export default async function (
     await this.agent.post(record)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/post]", response)
+  console.log("[imaichat/post]", response)
   if (response instanceof Error) {
     return response
   }

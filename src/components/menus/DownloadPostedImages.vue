@@ -53,8 +53,8 @@ async function downloadPostedImages () {
   for (let i = 0; i < urls.length; i ++) {
     const url = urls[i]
     const response: Error | Response =
-      await Util.fetchWithTimeout(`https://mimonelu.net:4649/${url}`, {
-        headers: { "user-agent": "Klearsky" },
+      await Util.fetchWithTimeout(`https://imai-1984.bsky.social:4649/${url}`, {
+        headers: { "user-agent": "imaichat" },
       })
         .then((value) => value)
         .catch((error) => error)

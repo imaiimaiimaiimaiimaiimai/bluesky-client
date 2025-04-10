@@ -137,7 +137,7 @@ export default async function (
             height: img.height,
           })
         } catch (error: any) {
-          console.warn("[klearsky/createEmbed]", error)
+          console.warn("[imaichat/createEmbed]", error)
           aspectRatios.push(undefined)
         }
       }

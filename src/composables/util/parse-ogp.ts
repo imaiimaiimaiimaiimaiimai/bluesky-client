@@ -14,7 +14,7 @@ export default async function (
         return value.json()
       })
       .catch((error) => error)
-  console.log("[klearsky/parse-ogp", response)
+  console.log("[imaichat/parse-ogp", response)
 
   // エラーをスルー
   /*

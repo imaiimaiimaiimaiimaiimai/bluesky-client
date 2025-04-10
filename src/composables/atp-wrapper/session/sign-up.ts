@@ -24,7 +24,7 @@ export default async function (
     await this.agent.createAccount(query)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/signUp]", response)
+  console.log("[imaichat/signUp]", response)
   if (response instanceof Error) {
     return response
   }

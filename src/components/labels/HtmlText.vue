@@ -99,7 +99,7 @@ const router = useRouter()
 function transformInternalLink (uri: string): undefined | string {
   const url: undefined | URL = Util.safeUrl(uri)
   if (url == null) {
-    console.warn(`[klearsky/transformInternalLink/${uri}]`, uri)
+    console.warn(`[imaichat/transformInternalLink/${uri}]`, uri)
     return
   }
   switch (url.hostname) {

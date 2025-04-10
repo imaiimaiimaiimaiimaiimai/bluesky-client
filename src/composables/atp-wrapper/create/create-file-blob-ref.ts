@@ -42,7 +42,7 @@ export default async function (
         useWebWorker: true,
       })
     } catch (error) {
-      console.warn("[klearsky/imageCompression]", error)
+      console.warn("[imaichat/imageCompression]", error)
       blob = Error("imageCompressionError")
     }
 
@@ -68,7 +68,7 @@ export default async function (
     await this.agent.uploadBlob(input, options)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/uploadBlob]", response)
+  console.log("[imaichat/uploadBlob]", response)
   if (response instanceof Error) {
     return response
   }

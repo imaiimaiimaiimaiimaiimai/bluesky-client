@@ -66,7 +66,7 @@ export default async function (
       })
         .then((value) => value)
         .catch((error) => error)
-    console.log('[klearsky/applyWrites]', response)
+    console.log('[imaichat/applyWrites]', response)
     if (response instanceof Error) {
       return response
     }

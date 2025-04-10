@@ -37,7 +37,7 @@ export default async function (
     )
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/updatePostgate]", response)
+  console.log("[imaichat/updatePostgate]", response)
   if (response instanceof Error) {
     return response
   }

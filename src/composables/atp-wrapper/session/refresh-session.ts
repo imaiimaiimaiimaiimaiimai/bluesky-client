@@ -11,7 +11,7 @@ export default async function (this: TIAtpWrapper): Promise<Error | undefined> {
   let hostName = ""
   const serviceUrl: undefined | URL = Util.safeUrl(session.__service)
   if (serviceUrl == null) {
-    console.warn("[klearsky/refreshSession]", session.__service)
+    console.warn("[imaichat/refreshSession]", session.__service)
     return Error("refreshSessionError")
   }
   hostName = serviceUrl.hostname
@@ -24,7 +24,7 @@ export default async function (this: TIAtpWrapper): Promise<Error | undefined> {
     await Util.fetchWithTimeout(url, request)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/refreshSession]", response)
+  console.log("[imaichat/refreshSession]", response)
   if (response instanceof Error) {
     return Error("refreshSessionError")
   }
@@ -60,7 +60,7 @@ export default async function (this: TIAtpWrapper): Promise<Error | undefined> {
     await this.agent.refreshSession()
       .then(() => {})
       .catch((error) => error)
-  console.log("[klearsky/refreshSession]", response)
+  console.log("[imaichat/refreshSession]", response)
   if (response instanceof Error) {
     return Error("refreshSessionError")
   }

@@ -53,7 +53,7 @@ export default async function (
       await this.agent.login(optinos)
         .then((value) => value)
         .catch((error) => error)
-    console.log("[klearsky/login]", response)
+    console.log("[imaichat/login]", response)
     if (response instanceof Error) {
       // 2FAエラー - トークン要求
       if ((response as any).error === "AuthFactorTokenRequired") {

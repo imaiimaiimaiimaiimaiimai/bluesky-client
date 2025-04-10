@@ -40,7 +40,7 @@ const externalComponent = ref()
 let isInvalidUrl = false
 let embeddedContentType: null | string = null
 let embeddedContentId: null | string = null
-const klearskyHostname = window.location.hostname
+const imaichatHostname = window.location.hostname
 let SoptifyType: string = "album"
 
 watch(() => mainState.currentSetting.linkcardEmbeddedControl, () => {
@@ -327,7 +327,7 @@ function searchUrl () {
       <iframe
         v-else-if="state.type === 'twitch'"
         class="external--twitch"
-        :src="`https://player.twitch.tv/?channel=${embeddedContentId}&parent=${klearskyHostname}&autoplay=false`"
+        :src="`https://player.twitch.tv/?channel=${embeddedContentId}&parent=${imaichatHostname}&autoplay=false`"
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
         allowfullscreen
         frameborder="0"

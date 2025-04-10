@@ -9,6 +9,9 @@ import Popup from "@/components/popups/Popup.vue"
 import Post from "@/components/compositions/Post.vue"
 import SVGIcon from "@/components/images/SVGIcon.vue"
 import Util from "@/composables/util"
+import * as geminiService from "@/services/geminiService"; // Import Gemini Service
+import EmojiPicker from 'vue3-emoji-picker'; // Import Emoji Picker
+import 'vue3-emoji-picker/css'; // Import Emoji Picker CSS
 
 const emit = defineEmits<{(event: string, done: boolean, hidden: boolean): void}>()
 
@@ -31,6 +34,11 @@ const state = reactive<{
   postDatePopupDate: ComputedRef<undefined | string>
   hiddenFeaturesDisplay: boolean
   videoLimits?: TIVideoLimits
+  isRecording: boolean
+  isRefining: boolean
+  originalText: string | null
+  showUndoRefine: boolean
+  showEmojiPicker: boolean
 }>({
   labels: [],
   draftReactionControl: {
@@ -54,6 +62,11 @@ const state = reactive<{
   }),
   hiddenFeaturesDisplay: false,
   videoLimits: undefined,
+  isRecording: false,
+  isRefining: false,
+  originalText: null,
+  showUndoRefine: false,
+  showEmojiPicker: false,
 })
 
 const easyFormState = reactive<{
@@ -72,7 +85,7 @@ const easyFormState = reactive<{
 
 const easyFormProps: TTEasyForm = {
   hasSubmitButton: true,
-  submitButtonLabel: $t("submit"),
+  submitButtonLabel: $t("postContent"),
   submitCallback,
   blurOnSubmit: true,
   data: [
@@ -465,205 +478,260 @@ const PreviewLinkCardFeature: {
     this.external.thumb = external.preview
   },
 }
+
+// Gemini Service integration for refining text
+async function refinePostWithAI() {
+  if (easyFormState.text.trim() === '' || state.isRefining) return;
+  state.isRefining = true;
+  state.originalText = easyFormState.text; // Store original text for undo
+  state.showUndoRefine = false;
+  try {
+    // Prepare a prompt for Gemini
+    const prompt = `Refine the following text for clarity, grammar, and engagement, suitable for a social media post. Keep the core meaning intact. Text: "${easyFormState.text}"`;
+
+    // Call Gemini API - Using a simple generateContent for now
+    // TODO: Consider using chat history if refinement becomes iterative
+    const refinedText = await geminiService.sendMessageToGemini(prompt);
+
+    if (refinedText) {
+      easyFormState.text = refinedText;
+      state.showUndoRefine = true; // Show undo option after successful refinement
+    } else {
+      // Handle cases where Gemini might return an empty response or error
+      // Maybe show a notification to the user
+      console.error("AI refinement failed to return text.");
+       mainState.openErrorPopup("aiRefinementError", "Could not refine text.");
+       state.showUndoRefine = false; // Don't show undo if refinement failed
+    }
+  } catch (error) {
+    console.error("Error refining post with AI:", error);
+    mainState.openErrorPopup("aiRefinementError", "Error contacting AI service.");
+    state.showUndoRefine = false; // Don't show undo on error
+  } finally {
+    state.isRefining = false;
+  }
+}
+
+// Placeholder for undoing the AI refinement
+function undoRefinement() {
+  if (state.originalText !== null) {
+    easyFormState.text = state.originalText;
+    state.originalText = null;
+    state.showUndoRefine = false;
+  }
+}
+
+// Placeholder for voice input
+function startVoiceInput() {
+  // Check for browser support (prefixed for broader compatibility)
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    console.error("Speech Recognition API not supported in this browser.");
+    mainState.openErrorPopup("voiceInputNotSupported", $t('voiceInputNotSupported'));
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = mainState.currentSetting.locale || 'en-US'; // Use app language if available
+  recognition.interimResults = false; // Get final result only
+  recognition.maxAlternatives = 1;
+
+  state.isRecording = true;
+
+  recognition.onresult = (event: SpeechRecognitionEvent) => {
+    const transcript = event.results[0][0].transcript;
+    const textarea = getTextarea();
+    if (textarea) {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const currentText = easyFormState.text;
+      // Insert transcript at cursor position, replacing selected text if any
+      const textBefore = currentText.substring(0, start);
+      const textAfter = currentText.substring(end);
+      const separator = textBefore.length > 0 && !/\s$/.test(textBefore) ? " " : ""; // Add space if needed
+      easyFormState.text = textBefore + separator + transcript + textAfter;
+      // Place cursor after the inserted transcript
+      nextTick(() => {
+        textarea.selectionStart = textarea.selectionEnd = start + separator.length + transcript.length;
+        textarea.focus();
+      });
+    } else {
+       // Fallback if textarea not found (less likely)
+       easyFormState.text += (easyFormState.text ? ' ' : '') + transcript;
+    }
+  };
+
+  recognition.onspeechend = () => {
+    recognition.stop();
+    state.isRecording = false;
+  };
+
+  recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+    console.error('Speech recognition error', event.error);
+    mainState.openErrorPopup("voiceInputError", `${$t('voiceInputError')}: ${event.error}`);
+    state.isRecording = false;
+  };
+
+  recognition.onnomatch = () => {
+     console.log('Speech not recognized.');
+     mainState.openErrorPopup("voiceInputNoError", "Speech not recognized.");
+     state.isRecording = false;
+  }
+
+  recognition.start();
+}
+
+// Placeholder for opening emoji/sticker picker
+function openEmojiPicker() {
+  state.showEmojiPicker = !state.showEmojiPicker; // Basic toggle
+}
+
+// Updated to handle event from vue3-emoji-picker
+function onSelectEmoji(emoji: any) {
+  console.log('Selected emoji:', emoji);
+  const selectedEmoji = emoji.i; // The actual emoji character
+  const textarea = getTextarea();
+  if(textarea) {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const currentText = easyFormState.text;
+      easyFormState.text = currentText.substring(0, start) + selectedEmoji + currentText.substring(end);
+       // Place cursor after the emoji
+      nextTick(() => {
+        textarea.selectionStart = textarea.selectionEnd = start + selectedEmoji.length;
+        textarea.focus();
+      });
+  }
+  state.showEmojiPicker = false; // Close picker after selection
+}
+
 </script>
 
 <template>
   <Popup
     class="send-post-popup"
     ref="popup"
-    :hasCloseButton="true"
+    :hasCloseButton="false"
     :loaderDisplay="mainState.sendPostPopupProcessing"
     :data-type="type"
     @close="close"
   >
     <template #header>
-      <!-- ヘルプボタン -->
-      <button
-        type="button"
-        @click.stop="mainState.openHtmlPopup('post')"
-      >
-        <SVGIcon name="help" />
-      </button>
-
-      <!-- リセットボタン -->
-      <button
-        type="button"
-        class="reset-button"
-        @click.stop="reset"
-      >
-        <SVGIcon name="remove" />
-      </button>
-
-      <h2>
-        <SVGIcon :name="type" />
-        <span>{{ $t(type) }}</span>
-      </h2>
-    </template>
-    <template #body>
-      <!-- プレビューポスト -->
-      <Post
-        v-if="type === 'reply' || type === 'quoteRepost'"
-        :key="post?.uri"
-        position="preview"
-        :post="post as TTPost"
-        :noLink="true"
-        @keydown.prevent.stop
-        @keyup.prevent.stop
-      />
-
-      <EasyForm
-        v-bind="easyFormProps"
-        ref="easyForm"
-      >
-        <template #item-content-after-1>
-          <!-- クリアボタン -->
+      <div class="post-header">
+        <button
+          type="button"
+          class="close-button"
+          @click="close"
+        >
+          <SVGIcon name="close" />
+        </button>
+        
+        <div class="header-right">
           <button
             type="button"
-            class="button--bordered"
-            @click.prevent="onClickClearButton"
+            class="drafts-button"
+            @click="mainState.openDraftsView()"
           >
-            <SVGIcon name="cross" />
+            {{ $t("drafts") }}
           </button>
-        </template>
-        <template #free-3>
-          <!-- プレビューリンクカード -->
-          <LinkCard
-            v-if="
-              !!PreviewLinkCardFeature.external.uri &&
-              easyFormState.url !== '' &&
-              !easyFormState.medias.length
-            "
-            :external="PreviewLinkCardFeature.external"
-            layout="vertical"
-            :displayImage="
-              !!PreviewLinkCardFeature.external.thumb &&
-              !!easyFormState.urlHasImage.length
-            "
-            :noLink="true"
-            :noEmbedded="true"
+        </div>
+      </div>
+    </template>
+    <template #body>
+      <div class="post-content">
+        <div class="user-avatar" v-if="mainState.userProfile?.avatar">
+          <img :src="mainState.userProfile.avatar" alt="User avatar" />
+        </div>
+        
+        <div class="post-form-container">
+          <div class="audience-selector">
+            <button class="audience-button">
+              {{ $t("everyone") }} 
+              <SVGIcon name="chevron-down" />
+            </button>
+          </div>
+          
+          <EasyForm
+            v-bind="easyFormProps"
+            ref="easyForm"
           >
-            <template #after>
-              <Loader
-                v-if="PreviewLinkCardFeature.loading.value"
-                class="link-card-loader"
-              />
-            </template>
-          </LinkCard>
-
-          <div class="button-container">
-            <!-- ポスト言語選択ポップアップトリガー -->
-            <button
-              class="button--bordered post-language-button"
-              @click.prevent="mainState.openPostLanguagesPopup()"
-            >
-              <SVGIcon name="translate" />
-              <span>{{ $t("languages") }}</span>
-              <b
-                v-if="mainState.currentSetting.postLanguages?.length"
-                class="post-language-button__set"
-              >{{ mainState.currentSetting.postLanguages?.join(", ") }}</b>
-              <b
-                v-else
-                class="post-language-button__not-set"
-              >{{ $t("notSet") }}</b>
-            </button>
-
-            <!-- ポストラベル選択ポップアップトリガー -->
-            <LabelButton
-              type="post"
-              :parentState="state"
-            />
-
-            <!-- Threadgate ポップアップトリガー -->
-            <button
-              class="button--bordered on-off-button"
-              :disabled="type === 'reply'"
-              @click.prevent="openReactionControlPopup"
-            >
-              <SVGIcon :name="state.isDraftReactionControlOn ? 'lock' : 'unlock'" />
-              <span>{{ $t("reactionControl") }}</span>
-              <b v-if="state.isDraftReactionControlOn">ON</b>
-            </button>
-
-            <!-- マイワードポップアップトリガー -->
-            <button
-              class="button--bordered my-word-button"
-              @click.prevent="mainState.openMyWordPopup('select')"
-            >
-              <SVGIcon name="alphaA" />
-              <span>{{ $t("myWord") }}</span>
-            </button>
-          </div>
-        </template>
-        <template #after>
-          <!-- 動画アップロード情報 -->
-          <div class="video-upload-info">
-            <div
-              v-if="state.videoLimits != null && !state.videoLimits.canUpload"
-              class="textlabel"
-            >
-              <div class="textlabel__text--alert">
-                <SVGIcon name="alert" />{{ $t("videoCanNotUpload") }}
-              </div>
-            </div>
-            <div
-              v-else-if="state.videoLimits?.canUpload"
-              class="textlabel"
-            >
-              <dl class="textlabel__text">
-                <dt>{{ $t("videoRemainingDailyNumber") }}</dt>
-                <dd>{{ (state.videoLimits.remainingDailyVideos ?? 0).toLocaleString() }}</dd>
-              </dl>
-              <dl class="textlabel__text">
-                <dt>{{ $t("videoRemainingDailyBytes") }}</dt>
-                <dd>{{ (((state.videoLimits.remainingDailyBytes ?? 0) / 1000 / 1000 / 1000).toFixed(2)).toLocaleString() }} GB</dd>
-              </dl>
-            </div>
-            <div
-              v-else
-              class="textlabel"
-            >
-              <dl class="textlabel__text">
-                <dt>&emsp;</dt>
-                <dd>&emsp;</dd>
-              </dl>
-            </div>
-          </div>
-
-          <!-- 隠し機能 -->
-          <div class="hidden-features">
-            <button
-              class="button--bordered hidden-features-toggle"
-              @click.prevent="toggleHiddenFeatures"
-            >
-              <SVGIcon :name="state.hiddenFeaturesDisplay ? 'cursorLeft' : 'cursorRight'" />
-              <span v-if="!state.hiddenFeaturesDisplay">{{ $t("hiddenFeatures") }}</span>
-            </button>
-
-            <template v-if="state.hiddenFeaturesDisplay">
-              <!-- ポスト日時選択ポップアップトリガー -->
+            <template #item-content-after-1>
+              <!-- Clear button (hidden) -->
               <button
-                class="button--bordered post-date-button"
-                @click.prevent="mainState.openPostDatePopup"
+                type="button"
+                class="button--bordered hidden"
+                @click.prevent="onClickClearButton"
               >
-                <SVGIcon name="history" />
-                <span>{{ $t("date") }}</span>
-                <b v-if="mainState.postDatePopupDate != null">{{ state.postDatePopupDate }}</b>
-              </button>
-
-              <!-- リストメンションポップアップトリガー -->
-              <button
-                class="button--bordered on-off-button"
-                @click.prevent="openListMentionPopup"
-              >
-                <SVGIcon name="list" />
-                <span>{{ $t("listMention") }}</span>
-                <b v-if="mainState.listMentionPopupProps.list != null">ON</b>
+                <SVGIcon name="cross" />
               </button>
             </template>
+          </EasyForm>
+          
+          <div class="post-actions">
+            <div class="post-info">
+              <!-- Removed "Everyone can reply" label -->
+            </div>
           </div>
-        </template>
-      </EasyForm>
+        </div>
+      </div>
+      
+      <div class="post-footer">
+        <div class="post-tools">
+          <button 
+            class="tool-button" 
+            title="Add image"
+            @click="onClickAddMediaButton"
+          >
+            <SVGIcon name="image" />
+            <span v-if="state.isRecording" class="recording-indicator">Recording...</span>
+          </button>
+          <button 
+            class="tool-button"
+            title="Add emoji"
+            @click="openEmojiPicker"
+          >
+            <SVGIcon name="emoticon-outline" />
+          </button>
+          <button 
+            class="tool-button"
+            title="Voice input"
+            @click="startVoiceInput"
+          >
+            <SVGIcon name="microphone" />
+          </button>
+          <button 
+            class="tool-button"
+            title="Refine post with AI"
+            @click="refinePostWithAI"
+          >
+            <Loader v-if="state.isRefining" :minimum="true" />
+            <SVGIcon v-else name="auto-fix" />
+            <span v-if="state.isRefining" class="refining-indicator">Refining...</span>
+          </button>
+          <button 
+            class="tool-button"
+            title="Set visibility"
+            @click="toggleVisibilityOptions"
+          >
+            <SVGIcon name="earth" />
+          </button>
+        </div>
+        
+        <button
+          type="button"
+          class="post-button"
+          @click="submitCallback"
+          :disabled="mainState.sendPostPopupProcessing || !easyFormState.text.length"
+        >
+          {{ $t("post") }}
+        </button>
+      </div>
+      
+      <!-- Real Emoji Picker -->
+      <div v-if="state.showEmojiPicker" class="emoji-picker-container">
+        <EmojiPicker
+          :native="true" @select="onSelectEmoji" />
+      </div>
     </template>
   </Popup>
 </template>
@@ -691,43 +759,39 @@ const PreviewLinkCardFeature: {
     }
 
     .popup {
-      max-height: $router-view-width;
+      max-height: 90vh;
+      border-radius: 16px;
+      overflow: hidden;
+      background-color: rgba(var(--bg-color), 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s ease-in-out;
+      transform: translateZ(0); /* Force GPU acceleration for smoother animations */
+      position: relative;
+      will-change: transform, opacity;
     }
 
     .popup-header {
-      & > h2 {
-        margin-right: 3rem;
-
-        & > .svg-icon {
-          fill: rgb(var(--type-color));
-        }
-      }
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(var(--fg-color), 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(5px);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background-color: rgba(var(--bg-color), 0.98);
     }
-
+    
     .popup-body {
-      padding-top: 0;
-    }
-
-    // プレビューポスト
-    .post[data-position="preview"] {
-      margin-top: 1rem;
-
-      .text {
-        pointer-events: fill;
-        user-select: text;
-      }
-
-      .textlink {
-        pointer-events: none;
-      }
-
-      .html-text {
-        white-space: wrap;
-      }
+      padding: 0;
+      display: flex;
+      flex-direction: column;
     }
 
     .easy-form__body {
-      grid-gap: 0.5rem;
+      grid-gap: 0;
     }
 
     // クリアボタン
@@ -737,111 +801,345 @@ const PreviewLinkCardFeature: {
     }
 
     .textarea {
-      // テキストエリアの自動伸縮時に border-width が影響する点に注意
-      border-top-color: transparent;
-      border-bottom-color: transparent;
-      border-left-style: none;
-      border-right-style: none;
-
+      border: none;
       border-radius: 0;
-      margin: 0 -1.5rem;
+      padding: 0;
+      font-size: 1.25rem;
+      resize: none;
+      min-height: 120px;
+      background-color: transparent;
+      color: rgb(var(--fg-color));
+      
+      &:focus {
+        outline: none;
+        box-shadow: none;
+      }
     }
 
-    // 送信ボタン
+    // Hide the submit button from EasyForm
     .submit-button {
-      --fg-color: var(--type-color);
+      display: none;
+    }
+    
+    // Hide form labels
+    dt {
+      display: none;
+    }
+    
+    // Adjust form padding
+    .easy-form__body {
+      padding: 0;
+    }
+    
+    dl {
+      margin: 0;
+    }
+    
+    .svg-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      fill: rgb(var(--accent-color));
     }
   }
 
-  // ヘルプボタン
-  .svg-icon--help {
-    font-size: 1.25rem;
+  .post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
   }
-
-  // リセットボタン
-  .reset-button > .svg-icon {
-    --fg-color: var(--notice-color);
+  
+  .close-button {
+    background: none;
+    border: none;
+    color: rgb(var(--fg-color));
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &:hover {
+      background-color: rgba(var(--fg-color), 0.1);
+      
+      &::after {
+        content: attr(title);
+        position: absolute;
+        bottom: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(var(--fg-color), 0.8);
+        color: rgb(var(--bg-color));
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        white-space: nowrap;
+        z-index: 10;
+      }
+    }
+    
+    .svg-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
   }
-
-  .link-card-loader {
-    font-size: 0.75rem;
+  
+  .drafts-button {
+    background: none;
+    border: none;
+    color: rgb(var(--accent-color));
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0;
+    
+    &:hover {
+      color: rgba(var(--accent-color), 0.8);
+    }
   }
-
-  // 動画アップロード情報
-  .video-upload-info {
+  
+  .post-content {
+    display: flex;
+    padding: 1rem;
+    flex: 1;
+    transition: padding 0.2s ease;
+  }
+  
+  .user-avatar {
+    margin-right: 0.75rem;
+    
+    img {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }
+  
+  .post-form-container {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    grid-gap: 0.25rem;
-    font-size: 0.875rem;
-    font-weight: bold;
-
-    dl {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      grid-gap: 0.5rem;
-
-      & > dt {
-        color: rgb(var(--fg-color), 0.5);
-      }
-    }
+    transition: all 0.2s ease;
   }
-
-  .button-container {
-    display: flex;
-    flex-wrap: wrap;
-    grid-gap: 0.5rem;
-
-    .button--bordered:deep() {
+  
+  .audience-selector {
+    margin-bottom: 0.75rem;
+    
+    .audience-button {
+      display: inline-flex;
+      align-items: center;
+      background-color: transparent;
+      border: 1px solid rgba(var(--accent-color), 0.5);
+      border-radius: 9999px;
+      color: rgb(var(--accent-color));
       font-size: 0.875rem;
-      overflow: hidden;
-      min-height: 2.625rem;
-
-      & > .svg-icon {
-        font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      cursor: pointer;
+      
+      &:hover {
+        background-color: rgba(var(--accent-color), 0.1);
       }
-
-      & > span,
-      & > b {
-        text-overflow: ellipsis;
+      
+      .svg-icon {
+        width: 1rem;
+        height: 1rem;
+        margin-left: 0.25rem;
       }
-      & > span {
-        white-space: nowrap;
-      }
-      & > b {
-        font-weight: bold;
-        line-height: var(--line-height-high);
-        word-break: break-all;
-      }
-    }
-    .post-language-button {
-      &__set {
-        color: rgb(var(--fg-color));
-        text-transform: uppercase;
-      }
-
-      &__not-set {
-        color: rgb(var(--notice-color));
-      }
-    }
-
-    .on-off-button > b {
-      color: rgb(var(--notice-color));
-    }
-    .post-date-button > b {
-      color: rgb(var(--fg-color));
     }
   }
-
-  // 隠し機能
-  .hidden-features {
+  
+  .post-actions {
     display: flex;
-    flex-wrap: wrap;
-    grid-gap: 0.5rem;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding: 0.75rem 0;
+    border-top: 1px solid rgba(var(--fg-color), 0.1);
+  }
+  
+  .post-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: rgb(var(--accent-color));
     font-size: 0.875rem;
-
-    &-toggle {
-      border-color: transparent;
+  }
+  
+  .visibility-info {
+    display: flex;
+    align-items: center;
+    
+    .svg-icon {
+      width: 1rem;
+      height: 1rem;
+      margin-right: 0.25rem;
+      fill: rgb(var(--accent-color));
+    }
+  }
+  
+  .post-footer {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid rgba(var(--fg-color), 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    background-color: rgba(var(--bg-color), 0.98);
+    transition: all 0.2s ease;
+  }
+  
+  .post-footer .post-tools {
+    display: flex;
+    gap: 1.25rem;
+    justify-content: flex-start;
+    flex: 1;
+  }
+  
+  .tool-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    
+    &:hover {
+      background-color: rgba(var(--accent-color), 0.1);
+      
+      &::after {
+        content: attr(title);
+        position: absolute;
+        bottom: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(var(--fg-color), 0.8);
+        color: rgb(var(--bg-color));
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        white-space: nowrap;
+        z-index: 10;
+      }
+    }
+    
+    .svg-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      fill: rgb(var(--accent-color));
+    }
+    
+    .recording-indicator {
+      font-size: 0.75rem;
+      color: rgb(var(--accent-color));
+      margin-left: 0.25rem;
+    }
+    
+    .refining-indicator {
+      font-size: 0.75rem;
+      color: rgb(var(--accent-color));
+      margin-left: 0.25rem;
+    }
+  }
+  
+  .post-button {
+    background-color: rgb(var(--accent-color));
+    color: white;
+    border: none;
+    border-radius: 9999px;
+    padding: 0.5rem 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover:not(:disabled) {
+      background-color: rgba(var(--accent-color), 0.9);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    &:active:not(:disabled) {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+    
+    &:disabled {
+      background-color: rgba(var(--accent-color), 0.5);
+      cursor: not-allowed;
+    }
+  }
+  
+  .emoji-picker-container {
+    position: absolute;
+    bottom: 60px;
+    left: 1rem;
+    z-index: 100;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    background-color: rgba(var(--bg-color), 0.98);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    transform: translateZ(0);
+    width: 300px;
+    height: 300px;
+    overflow: auto;
+  }
+  
+  /* Container for the emoji picker */
+  .emoji-picker-container {
+    /* You might want to add positioning styles here if needed */
+    /* e.g., position: absolute; bottom: 50px; left: 10px; z-index: 10; */
+  }
+  
+  .tool-buttons {
+    display: flex;
+    gap: 0.5rem; /* Spacing between buttons */
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+  }
+  
+  .tool-button-wrapper {
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &.recording svg {
+      color: var(--notice-color);
+      animation: pulse 1.5s infinite;
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .loader {
+      width: 1em; /* Match icon size */
+      height: 1em;
+    }
+  }
+  
+  /* Basic pulsing animation for recording */
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
     }
   }
 }

@@ -21,7 +21,7 @@ export default async function (
     await this.agent.app.bsky.feed.getActorFeeds(query)
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/getActorFeeds]", response)
+  console.log("[imaichat/getActorFeeds]", response)
   if (response instanceof Error) {
     return response
   }

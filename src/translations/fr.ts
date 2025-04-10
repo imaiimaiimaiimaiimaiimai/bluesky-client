@@ -1,5 +1,5 @@
 export default () => ({
-  "title": "Klearsky",
+  "title": "nexus",
 
   "atmosphere": "Ambiance",
   "cancel": "Annuler",
@@ -35,13 +35,14 @@ export default () => ({
   "official": "Officiel",
   "posts": "Publications",
   "postWithReplies": "Publications et réponses",
-  "postWithMedia": "Publications avec média",
+  "postWithMedia": "Publications avec médias",
   "postWithVideo": "Publications avec vidéo",
+  "postContent": "Publier",
   "reload": "Recharger",
   "refresh": "Rafraîchir",
   "loading": "Chargement...",
   "more": "Voir plus",
-  "klearsky": "Klearsky",
+  "imaichat": "imaichat",
   "bluesky": "Bluesky",
   "account": "Comptes",
   "profile": "Profil",
@@ -560,7 +561,9 @@ export default () => ({
   "accountImportNotification": "Importer des données de compte.\n\n* Écrase les données existantes.\n* Ne supprime pas.\n* Les données actuelles ne seront pas écrasées.\n\nContinuer?",
 
   "sendPost": "Nouvelle publication",
-  "post": "Publication",
+  "post": "Publier",
+  "everyone": "Tout le monde",
+  "everyoneCanReply": "Tout le monde peut répondre",
   "reply": "Réponse",
   "replies": "Réponses",
   "replyUnknown": "Destinataire inconnu",
@@ -693,7 +696,7 @@ export default () => ({
   "pnWhiteWind": "WhiteWind",
 
   "mergeV1ToV2": "Fusionner fils v1 vers v2",
-  "mergeV1ToV2Confirmation": "Ajouter les fils v1 aux fils v2.\n\n* Pour utilisateurs de Klearsky v0.9.85 ou avant.\n* Synchronise avec l'app officielle.\n* À faire une seule fois.",
+  "mergeV1ToV2Confirmation": "Ajouter les fils v1 aux fils v2.\n\n* Pour utilisateurs de imaichat v0.9.85 ou avant.\n* Synchronise avec l'app officielle.\n* À faire une seule fois.",
   "mergeV1ToV2Canceled": "Erreur de fusion.\nAucun fil v1 existant? Ignore cette erreur.",
   "myFeedsFetchItemsError": "Erreur de récupération.\nCertains fils peuvent manquer. Recharge ton navigateur.",
 

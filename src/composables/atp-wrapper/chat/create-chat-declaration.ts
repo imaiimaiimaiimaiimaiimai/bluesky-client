@@ -21,7 +21,7 @@ export default async function (
     )
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/chat.bsky.actor.declaration.create]", response)
+  console.log("[imaichat/chat.bsky.actor.declaration.create]", response)
   if (response instanceof Error) {
     return response
   }

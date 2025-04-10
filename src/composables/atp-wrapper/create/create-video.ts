@@ -39,17 +39,17 @@ export default async function (
       .then((value) => value)
       .catch((error) => error)
   if (responseOfUploadVideo instanceof Error) {
-    console.warn("[klearsky/createVideo]", responseOfUploadVideo)
+    console.warn("[imaichat/createVideo]", responseOfUploadVideo)
     return responseOfUploadVideo
   }
   if (!(responseOfUploadVideo?.ok)) {
-    console.warn("[klearsky/createVideo]", responseOfUploadVideo)
+    console.warn("[imaichat/createVideo]", responseOfUploadVideo)
     return Error("apiError")
   }
   const jsonOfUploadVideo = await responseOfUploadVideo.json()
     .then((value) => value)
     .catch((error) => error)
-  console.log("[klearsky/createVideo]", jsonOfUploadVideo)
+  console.log("[imaichat/createVideo]", jsonOfUploadVideo)
   if (jsonOfUploadVideo instanceof Error) {
     return jsonOfUploadVideo
   }
@@ -72,17 +72,17 @@ export default async function (
         .then((value) => value)
         .catch((error) => error)
     if (response instanceof Error) {
-      console.warn("[klearsky/getJobStatus]", response)
+      console.warn("[imaichat/getJobStatus]", response)
       return response
     }
     if (!(response?.ok)) {
-      console.warn("[klearsky/getJobStatus]", response)
+      console.warn("[imaichat/getJobStatus]", response)
       return Error("apiError")
     }
     const json = await response.json()
       .then((value) => value)
       .catch((error) => error)
-    console.log("[klearsky/getJobStatus]", json)
+    console.log("[imaichat/getJobStatus]", json)
     if (json instanceof Error) {
       return json
     }
@@ -112,7 +112,7 @@ export default async function (
     })
       .then((value) => value)
       .catch((error) => error)
-  console.log("[klearsky/createVideo]", response)
+  console.log("[imaichat/createVideo]", response)
   if (response instanceof Error) {
     return response
   }
